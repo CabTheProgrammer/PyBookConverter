@@ -1,5 +1,7 @@
 from ebooklib import epub
 import os
+
+
 # Function to count number of files in a directory
 def dcount(address):
     num = 0
@@ -7,13 +9,15 @@ def dcount(address):
         num += 1
     return int(num)
 
+
 # function to chunkify process?
 def chunk(whole, chunksize):
     Arr = [0, 0, "flag", 0]
     Arr[0] = round(whole / chunksize)  # Chapter size of each volume
     Arr[1] = whole - ((Arr[0] - 1) * chunksize)  # Chapter size of the last volume
-    Arr[3] = chunksize
+    Arr[3] = chunksize  # This is the size of the "chunk"
     return Arr
+
 
 def op(addr):
     print("Would you like to create the ebook in volumes or in just one ominibus?")
@@ -37,9 +41,9 @@ def op(addr):
     return return_val
 
 
-def LeLoop(Arr,addr,book):  # Yup this could have been done differently smh
+def LeLoop(Arr, addr, book):  # Yup this could have been done differently smh
     i = 0
-    name=book.title
+    name = book.title
     if "Omnibus" in Arr:
         print("Omnibus Loop")
         while Arr[0] > i:
@@ -57,7 +61,7 @@ def LeLoop(Arr,addr,book):  # Yup this could have been done differently smh
                 break
             # while loop to add all chapters
 
-        epub.write_epub('%s.epub' %book.Title, book, {})
+        epub.write_epub('%s.epub' % book.Title, book, {})
         print('Book Complete!')
 
     else:
@@ -67,8 +71,9 @@ def LeLoop(Arr,addr,book):  # Yup this could have been done differently smh
         vol_num = 0  # Count for each book volume
         print(str(Arr[0]))
         while t_volume > count:
-            if count + Arr[1] == t_volume:  # This generates the last volume specifically as its chapter size may be greater or lesser than the given size
-                book.title=name
+            if count + Arr[
+                1] == t_volume:  # This generates the last volume specifically as its chapter size may be greater or lesser than the given size
+                book.title = name
                 for iter in range(Arr[1]):
                     cfile = open(addr + "\\Chapter %s.txt" % str(i), encoding="UTF-8")
                     ctext = cfile.read()
@@ -83,7 +88,7 @@ def LeLoop(Arr,addr,book):  # Yup this could have been done differently smh
                     count += 1  # iterates l in the outer loop
                     i += 1
                 vol_num += 1
-                epub.write_epub('%s Volume %s.epub' % (book.title,str(vol_num)), book, {})
+                epub.write_epub('%s Volume %s.epub' % (book.title, str(vol_num)), book, {})
                 book.reset()  # Were my prayers answered or is this a dud?
                 print('Volume %s of %s  complete!' % (vol_num, Arr[0]))
                 print('Volume Generation Complete!')
@@ -103,9 +108,9 @@ def LeLoop(Arr,addr,book):  # Yup this could have been done differently smh
                 # while loop to add all chapters
                 i += 1
             vol_num += 1
-            epub.write_epub('%s Volume %s.epub' % (book.title,str(vol_num)), book, {})
+            epub.write_epub('%s Volume %s.epub' % (book.title, str(vol_num)), book, {})
             book.reset()  # Were my prayers answered or is this a dud?
-            book.title=name
+            book.title = name
             print('Volume %s of %s  complete!' % (vol_num, Arr[0]))
 
 
@@ -114,25 +119,25 @@ class PsuedoBook:
         self.Author = auth
         self.Title = title
         self.cover = cover  # holds the address of the image to be used as the book cover
-        self.addr = "C:\\Users\\CAB\\PycharmProjects\\PracticalGrab\\A Practical Guide to Evil\\A Practical Guide to Evil"  #usually addr
+        self.addr = "C:\\Users\\CAB\\PycharmProjects\\PracticalGrab\\A Practical Guide to Evil\\A Practical Guide to Evil"  # usually addr
 
         self.book = epub.EpubBook()
         self.book.set_identifier("EBK")
         self.book.set_title(self.Title)
         self.book.set_language('en')
         self.book.add_author(self.Author)
-        if self.cover == "none":
+        if self.cover != "none":
+            print("This is not none")
             self.book.set_cover(self.cover, open(self.cover, 'rb').read())
+        print("This is  none")
         self.book.spine = ['cover']
-
-        print(self.book.title)
 
     def build_book(self):  # To Actually build the book
         c_info = op(self.addr)
-        LeLoop(c_info,self.addr,self.book)
+        LeLoop(c_info, self.addr, self.book)
 
 
-B = PsuedoBook("John Mayer", "Test Volume", "cheese", "MT")
+B = PsuedoBook("John Mayer", "Test Volume", "none", "MT")
 B.build_book()
 
 # book = epub.EpubBook()
