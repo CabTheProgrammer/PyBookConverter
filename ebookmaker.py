@@ -19,17 +19,12 @@ def chunk(whole, chunksize):
     return Arr
 
 
-def op(addr):
-    print("Would you like to create the ebook in volumes or in just one ominibus?")
-    print("Chapters available: " + str(dcount(addr)) + " chapters!")
-    print("1) Volumes\n2) Omnibus\n")
-    option = input()
-    if int(option) == 1:
-        print("How many chapters per volume? ")
-        chap_size = input()
+def op(addr,chapsize):
+    if int(chapsize) != 0:
+        chap_size = chapsize
         vol_size = chunk(dcount(addr), int(chap_size))
         vol_size[2] = "Non-Omnibus"
-        print("Ok, " + str(vol_size[0]) + " volumes will be created")
+        print(str(vol_size[0]) + " volumes will be created")
         print(str(vol_size[1]))
         return_val = vol_size
     else:
@@ -71,8 +66,7 @@ def LeLoop(Arr, addr, book):  # Yup this could have been done differently smh
         vol_num = 0  # Count for each book volume
         print(str(Arr[0]))
         while t_volume > count:
-            if count + Arr[
-                1] == t_volume:  # This generates the last volume specifically as its chapter size may be greater or lesser than the given size
+            if count + Arr[1] == t_volume:  # This generates the last volume specifically as its chapter size may be greater or lesser than the given size
                 book.title = name
                 for iter in range(Arr[1]):
                     cfile = open(addr + "\\Chapter %s.txt" % str(i), encoding="UTF-8")
@@ -115,30 +109,35 @@ def LeLoop(Arr, addr, book):  # Yup this could have been done differently smh
 
 
 class PsuedoBook:
-    def __init__(self, auth, title, cover, addr):  # For initialization and stuff
+    def __init__(self, auth, title, cover, addr,chapsize):  # For initialization and stuff
         self.Author = auth
         self.Title = title
         self.cover = cover  # holds the address of the image to be used as the book cover
-        self.addr = "C:\\Users\\CAB\\PycharmProjects\\PracticalGrab\\A Practical Guide to Evil\\A Practical Guide to Evil"  # usually addr
+        self.addr = "C:\\Users\\CAB\\PycharmProjects\\PracticalGrab\\A Practical Guide to Evil\\A Practical Guide to Evil"
+        # usually addr of the directory with the formatted files.
+        self.chapsize = chapsize
+
+
 
         self.book = epub.EpubBook()
         self.book.set_identifier("EBK")
         self.book.set_title(self.Title)
         self.book.set_language('en')
         self.book.add_author(self.Author)
-        if self.cover != "none":
-            print("This is not none")
-            self.book.set_cover(self.cover, open(self.cover, 'rb').read())
-        print("This is  none")
         self.book.spine = ['cover']
 
+        if self.cover != "blank" or self.cover!="none":
+            self.book.set_cover(self.cover, open(self.cover, 'rb').read())
+        else:
+            print("This is no cover")
+
     def build_book(self):  # To Actually build the book
-        c_info = op(self.addr)
+        c_info = op(self.addr,self.chapsize)
         LeLoop(c_info, self.addr, self.book)
 
-
-B = PsuedoBook("John Mayer", "Test Volume", "none", "MT")
-B.build_book()
+#For testing purposes below
+#B = PsuedoBook("John Mayer", "Test Volume", "none", "MT")
+#B.build_book()
 
 # book = epub.EpubBook()
 # addr = "C:\\Users\\CAB\\PycharmProjects\\PracticalGrab\\A Practical Guide to Evil\\A Practical Guide to Evil"
