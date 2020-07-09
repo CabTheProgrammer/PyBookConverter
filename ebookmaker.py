@@ -2,8 +2,12 @@ from ebooklib import epub
 import os
 
 
+# Developed by CabTheProgrammer
+# This is the back-end for the ebook gui! This script converts preformatted text files into an ebook format
+# for easy reading
 # Function to count number of files in a directory
-def dcount(address):
+
+def dcount(address):  # Counts the number of files in a directory
     num = 0
     for stuff in os.listdir(address):
         num += 1
@@ -19,7 +23,7 @@ def chunk(whole, chunksize):
     return Arr
 
 
-def op(addr,chapsize):
+def op(addr, chapsize):
     if int(chapsize) != 0:
         chap_size = chapsize
         vol_size = chunk(dcount(addr), int(chap_size))
@@ -39,34 +43,34 @@ def op(addr,chapsize):
 def LeLoop(Arr, addr, book):  # Yup this could have been done differently smh
     i = 0
     name = book.title
-    if "Omnibus" in Arr:
+    if "Omnibus" in Arr:  # Option to create a single ebook
         print("Omnibus Loop")
         while Arr[0] > i:
             cfile = open(addr + "\\Chapter %s.txt" % str(i), encoding="UTF-8")
             ctext = cfile.read()
             chapwrite = epub.EpubHtml(title='Chapter%s' % str(i), file_name='Chapter%s.xhtml' % str(i), lang='en')
-            chapwrite.content = ctext
+            chapwrite.set_content(ctext)
             book.add_item(chapwrite)
-            book.toc = (epub.Link('Chapter%s.xhtml' % i, 'Chapter %s' % i), chapwrite)
+            book.toc = (epub.Link('Chapter%s.xhtml' % str(i), 'Chapter %s' % str(i)), chapwrite)
             book.spine = book.spine + [chapwrite]
-            # print(book.spine)
             cfile.close()
             i = i + 1
+
             if i > 10:  # DELETE THIS
                 break
             # while loop to add all chapters
-
-        epub.write_epub('%s.epub' % book.Title, book, {})
+        epub.write_epub('%s.epub' % book.title, book, {})
         print('Book Complete!')
 
-    else:
+    else:  # Option to create volumes instead of omnibus
         print("NonOmnibus Loop")
         t_volume = dcount(addr)
         count = 0
         vol_num = 0  # Count for each book volume
         print(str(Arr[0]))
         while t_volume > count:
-            if count + Arr[1] == t_volume:  # This generates the last volume specifically as its chapter size may be greater or lesser than the given size
+            if count + Arr[
+                1] == t_volume:  # This generates the last volume specifically as its chapter size may be greater or lesser than the given size
                 book.title = name
                 for iter in range(Arr[1]):
                     cfile = open(addr + "\\Chapter %s.txt" % str(i), encoding="UTF-8")
@@ -109,15 +113,13 @@ def LeLoop(Arr, addr, book):  # Yup this could have been done differently smh
 
 
 class PsuedoBook:
-    def __init__(self, auth, title, cover, addr,chapsize):  # For initialization and stuff
+    def __init__(self, auth, title, cover, addr, chapsize):  # For initialization and stuff
         self.Author = auth
         self.Title = title
         self.cover = cover  # holds the address of the image to be used as the book cover
         self.addr = "C:\\Users\\CAB\\PycharmProjects\\PracticalGrab\\A Practical Guide to Evil\\A Practical Guide to Evil"
         # usually addr of the directory with the formatted files.
         self.chapsize = chapsize
-
-
 
         self.book = epub.EpubBook()
         self.book.set_identifier("EBK")
@@ -126,18 +128,19 @@ class PsuedoBook:
         self.book.add_author(self.Author)
         self.book.spine = ['cover']
 
-        if self.cover != "blank" or self.cover!="none":
+        if self.cover != "none":
             self.book.set_cover(self.cover, open(self.cover, 'rb').read())
         else:
             print("This is no cover")
 
     def build_book(self):  # To Actually build the book
-        c_info = op(self.addr,self.chapsize)
+        c_info = op(self.addr, self.chapsize)
         LeLoop(c_info, self.addr, self.book)
 
-#For testing purposes below
-#B = PsuedoBook("John Mayer", "Test Volume", "none", "MT")
-#B.build_book()
+
+# For testing purposes below
+B = PsuedoBook("John Mayer", "Test Volume", "none", "MT", 0)
+B.build_book()
 
 # book = epub.EpubBook()
 # addr = "C:\\Users\\CAB\\PycharmProjects\\PracticalGrab\\A Practical Guide to Evil\\A Practical Guide to Evil"
