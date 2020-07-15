@@ -14,8 +14,7 @@ def d_count(addr):  # Counts the number of files in a directory
     return int(num)
 
 
-address = "C:\\Users\\CAB\\PycharmProjects\\PracticalGrab\\A Practical Guide to Evil\\A Practical Guide to Evil"
-count = d_count(address)
+
 B_Title = "This content has been generated through python"
 
 toc_head = '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n\
@@ -58,7 +57,8 @@ nav = ""
 toc = ""
 
 
-def create():
+def create(address):
+    count = d_count(address)
     global toc_string, add_string, nav, toc
     i = 1
     while i < count:
@@ -84,10 +84,11 @@ def create():
     # t_file.close()
 
 
-def create_vol(array):  # overridden method for constructing multiple files
+def create_vol(array, address):  # overridden method for constructing multiple files
     # arr[0] is the size of the chapter of the volumes
     # arr[1] is the chapter size of the last volume
     # arr[3] is the size of the chunk?
+    count = d_count(address)
     global toc_string, add_string, nav, toc
     int_cnt = 1
     i = 0
@@ -153,5 +154,5 @@ def create_vol(array):  # overridden method for constructing multiple files
     print("Complete")
 
 
-arr = [20, 4, 80, 40]
-create_vol(arr)
+# arr = [20, 4, 80, 40]
+# create_vol(arr)
