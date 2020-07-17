@@ -17,7 +17,7 @@ radio = 0
 
 # Functions
 
-def popupmsg(msg):
+def popup_msg(msg):
     popup = tkinter.Tk()
     popup.title = "Alert!"
     label = tkinter.Label(popup, text=msg)
@@ -63,15 +63,15 @@ def comp():
 
     # These are for validation to ensure that the back-end doesn't get anything
     if addr == "blank":
-        popupmsg("Error, no address was selected")
+        popup_msg("Error, no address was selected")
         return
     if title == "":
         title = "Empty"
-        popupmsg("Error, no title was Given")
+        popup_msg("Error, no title was Given")
         return
     if auth == "":
         auth = "Blank McBlankface"
-        popupmsg("Error, no auth was Given")
+        popup_msg("Error, no author was Given")
         return
     if chap_size == "" or radio == 0:
         chap_size = 0
